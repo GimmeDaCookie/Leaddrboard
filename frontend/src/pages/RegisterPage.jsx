@@ -18,7 +18,13 @@ function RegisterPage() {
       console.log(data);
       navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred');
+      if (err.response?.data?.errors) {
+        // Handle array of validation errors
+        const messages = err.response.data.errors.map(e => e.msg).join('. ');
+        setError(messages);
+      } else {
+        setError(err.response?.data?.message || 'An error occurred');
+      }
     }
   };
 
@@ -56,6 +62,11 @@ function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <label className="label">
+                <span className="label-text-alt text-xs text-base-content/70">
+                  Min 8 chars, 1 uppercase, 1 lowercase, 1 number
+                </span>
+              </label>
             </div>
             {error && <p className="text-error text-center text-sm">{error}</p>}
             <div className="form-control mt-6">
