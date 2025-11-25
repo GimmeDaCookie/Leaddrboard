@@ -26,7 +26,10 @@ app.use(globalLimiter);
 
 // Enable CORS
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 
 // Body parser with size limit
 app.use(express.json({ limit: '10mb' }));
