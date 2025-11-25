@@ -29,7 +29,7 @@ function LoginPage() {
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">Welcome Back!</h1>
-          <p className="py-6">Sign in to track your scores and compete on the leaderboard.</p>
+          <p className="py-6">Sign in to track your scores and compete on the leaddrboard.</p>
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <form className="card-body" onSubmit={handleSubmit}>
