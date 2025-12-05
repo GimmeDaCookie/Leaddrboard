@@ -65,4 +65,15 @@ const profileLimiter = rateLimit({
   message: { message: 'Too many profile updates, please try again later.' }
 });
 
-module.exports = { globalLimiter, authLimiter, scoreLimiter, profileLimiter, redisClient };
+// Image extraction limiter (900/month)
+const imageExtractionLimiter = rateLimit({
+  store: createStore('image_extraction'),
+  windowMs: 30 * 24 * 60 * 60 * 1000, // 30 days
+  max: 900,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => 'global_image_extraction', // Global limit for all users
+  message: { message: 'Monthly image extraction limit reached.' }
+});
+
+module.exports = { globalLimiter, authLimiter, scoreLimiter, profileLimiter, imageExtractionLimiter, redisClient };

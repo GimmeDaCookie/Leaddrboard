@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../axios';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ArrowLeftIcon, CameraIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import SongSelect from '../components/SongSelect';
 import { useLocation } from 'react-router';
@@ -15,6 +15,7 @@ function AddScorePage() {
   const [selectedSong, setSelectedSong] = useState(null);
   const [difficulties, setDifficulties] = useState([]);
   const [hasParams, setHasParams] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const location = useLocation();
 
   // Prefill song if ?song=... query param provided
@@ -42,6 +43,55 @@ function AddScorePage() {
     setSelectedSong(s);
     setDifficulties(s && s.difficulties ? s.difficulties : []);
     setDifficulty('');
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const { data } = await axios.post('/scores/extract-from-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      let autoFilled = [];
+
+      if (data.song) {
+        setSelectedSong(data.song);
+        setDifficulties(data.song.difficulties || []);
+        autoFilled.push('Song');
+      }
+
+      if (data.difficulty) {
+        setDifficulty(data.difficulty);
+        autoFilled.push('Difficulty');
+      }
+
+      if (data.score) {
+        setScore(data.score.toString());
+        autoFilled.push('Score');
+      }
+      
+      if (autoFilled.length > 0) {
+          alert(`Auto-filled: ${autoFilled.join(', ')}`);
+      } else {
+          alert('Could not extract data from image. Please fill manually.');
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.msg || 'Failed to extract data from image');
+    } finally {
+      setUploadingImage(false);
+      // Reset file input
+      e.target.value = null;
+    }
   };
 
   const handleSubmit = (e) => {
@@ -138,7 +188,21 @@ function AddScorePage() {
         
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title text-2xl mb-4">Add New Score</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="card-title text-2xl">Add New Score</h2>
+              <div className="tooltip tooltip-left" data-tip="Auto-fill from image">
+                <label className={`btn btn-circle btn-ghost ${uploadingImage ? 'loading' : ''}`}>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={handleImageUpload} 
+                    disabled={uploadingImage}
+                  />
+                  {!uploadingImage && <CameraIcon size={24} />}
+                </label>
+              </div>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="form-control">

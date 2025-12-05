@@ -41,7 +41,7 @@ function SongSelect({ onSongSelect, initialSong }) {
     if (initialSong && initialSong.title && initialSong.title !== query) {
       setQuery(initialSong.title);
       setSelectedSongTitle(initialSong.title);
-      onSongSelect && onSongSelect(initialSong);
+      // Do not call onSongSelect here, as it triggers a loop/reset in parent
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialSong]);

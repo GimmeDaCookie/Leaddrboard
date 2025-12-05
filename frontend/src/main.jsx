@@ -17,6 +17,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import Header from './components/Header.jsx';
 import AddScorePage from './pages/AddScorePage.jsx';
 import ManageProfilePage from './pages/ManageProfilePage.jsx';
+import { AuthProvider } from './contexts/AuthContext.jsx';
 
 const Layout = () => (
   <div>
@@ -33,49 +34,59 @@ const NavigateToProfile = () => {
   return <Navigate to="/login" replace />;
 };
 
+// Wrapper component that provides AuthContext inside the router
+const AuthWrapper = ({ children }) => {
+  return <AuthProvider>{children}</AuthProvider>;
+};
+
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <LandingPage />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    element: <ProtectedRoute />,
+    element: <AuthWrapper><Outlet /></AuthWrapper>,
     children: [
       {
-        element: <Layout />,
+        path: "/",
+        element: <LandingPage />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+      {
+        element: <ProtectedRoute />,
         children: [
           {
-            path: "/home",
-            element: <HomePage />,
+            element: <Layout />,
+            children: [
+              {
+                path: "/home",
+                element: <HomePage />,
+              },
+              {
+                path: "/song/:songName",
+                element: <SongPage />,
+              },
+              {
+                path: "/profile",
+                element: <NavigateToProfile />,
+              },
+              {
+                path: "/profile/:username",
+                element: <ProfilePage />,
+              },
+              {
+                path: "/addScore",
+                element: <AddScorePage />
+              },
+              {
+                path: "/profile/manage",
+                element: <ManageProfilePage />
+              }
+            ],
           },
-          {
-            path: "/song/:songName",
-            element: <SongPage />,
-          },
-          {
-            path: "/profile",
-            element: <NavigateToProfile />,
-          },
-          {
-            path: "/profile/:username",
-            element: <ProfilePage />,
-          },
-          {
-            path: "/addScore",
-            element: <AddScorePage />
-          },
-          {
-            path: "/profile/manage",
-            element: <ManageProfilePage />
-          }
         ],
       },
     ],

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import axios from '../axios';
+import { useAuth } from '../contexts/AuthContext';
 
 function LoginPage() {
   // const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,8 +18,7 @@ function LoginPage() {
 
     try {
       const { data } = await axios.post('/auth/login', { username, password });
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data));
+      login(data.token, data);
       navigate('/home');
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred');
