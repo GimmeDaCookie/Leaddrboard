@@ -59,7 +59,7 @@ function HomePage() {
     "X3 vs. 2ndMIX": "X3",
     A: "A",
     A20: "A20",
-    "A20 PLUS": "A20+",
+    "A20 PLUS": "A20 PLUS",
     A3: "A3",
     WORLD: "WORLD",
   };
