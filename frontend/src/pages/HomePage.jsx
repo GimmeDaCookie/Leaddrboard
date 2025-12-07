@@ -47,8 +47,21 @@ function HomePage() {
     "3rdMIX": "3rd",
     "4thMIX": "4th",
     "5thMIX": "5th",
+    "DDR 2013": "2013",
+    "DDR 2014": "2014",
     DDRMAX: "MAX",
     DDRMAX2: "MAX2",
+    EXTREME: "EXTREME",
+    SuperNOVA: "SuperNOVA",
+    SuperNOVA2: "SuperNOVA2",
+    X: "X",
+    X2: "X2",
+    "X3 vs. 2ndMIX": "X3",
+    A: "A",
+    A20: "A20",
+    "A20 PLUS": "A20+",
+    A3: "A3",
+    WORLD: "WORLD",
   };
 
   React.useEffect(() => {
