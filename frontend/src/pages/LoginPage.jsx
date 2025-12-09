@@ -1,13 +1,13 @@
-
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import axios from '../axios';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import axios from "../axios";
+import { useAuth } from "../contexts/AuthContext";
 
 function LoginPage() {
   // const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -17,11 +17,11 @@ function LoginPage() {
     setError(null);
 
     try {
-      const { data } = await axios.post('/auth/login', { username, password });
+      const { data } = await axios.post("/auth/login", { username, password });
       login(data.token, data);
-      navigate('/home');
+      navigate("/home");
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred');
+      setError(err.response?.data?.message || "An error occurred");
     }
   };
 
@@ -30,45 +30,60 @@ function LoginPage() {
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">Welcome Back!</h1>
-          <p className="py-6">Sign in to track your scores and compete on the leaddrboard.</p>
+          {loading ? (
+            <p className="py-6">Signing you in...</p>
+          ) : (
+            <p className="py-6">
+              Sign in to track your scores and compete on the leaddrboard.
+            </p>
+          )}
         </div>
-        <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-          <form className="card-body" onSubmit={handleSubmit}>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Username</span>
-              </label>
-              <input 
-                type="text" 
-                placeholder="username" 
-                className="input input-bordered" 
-                required 
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Password</span>
-              </label>
-              <input 
-                type="password" 
-                placeholder="password" 
-                className="input input-bordered" 
-                required 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && <p className="text-error text-center text-sm">{error}</p>}
-            <div className="form-control mt-6">
-              <button className="btn btn-primary text-white">Login</button>
-            </div>
-            <div className="text-center mt-4">
-              Don't have an account? <Link to="/register" className="link link-primary">Register</Link>
-            </div>
-          </form>
-        </div>
+        {loading ? (
+          <div className="loading loading-spinner loading-lg justify-center"></div>
+        ) : (
+          <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+            <form className="card-body" onSubmit={handleSubmit}>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Username</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="username"
+                  className="input input-bordered"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Password</span>
+                </label>
+                <input
+                  type="password"
+                  placeholder="password"
+                  className="input input-bordered"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              {error && (
+                <p className="text-error text-center text-sm">{error}</p>
+              )}
+              <div className="form-control mt-6">
+                <button className="btn btn-primary text-white">Login</button>
+              </div>
+              <div className="text-center mt-4">
+                Don't have an account?{" "}
+                <Link to="/register" className="link link-primary">
+                  Register
+                </Link>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
